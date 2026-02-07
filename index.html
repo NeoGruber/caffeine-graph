@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Caffeine Tracker</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -302,6 +303,10 @@
             <div class="legend-item">
                 <div class="legend-color" style="background-color: rgb(244, 67, 54);"></div>
                 <span>Health Critical Level (<span id="criticalLevelText">400mg</span>) - Maximum recommended daily intake</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: rgb(156, 39, 176);"></div>
+                <span>Sleep Cutoff Line (Purple) - 4 hours before your bedtime; aim to be below 100mg by this time</span>
             </div>
         </div>
         
@@ -794,11 +799,21 @@
             const sleepLevel = Array(timeSeriesData.labels.length).fill(limits.sleepImpact);
             const criticalLevel = Array(timeSeriesData.labels.length).fill(limits.maxDaily);
 
+            const sleepTimeMinus4Hours = new Date(endTime.getTime() - 4 * 60 * 60 * 1000);
+            const cutoffHour = sleepTimeMinus4Hours.getHours().toString().padStart(2, '0');
+            const cutoffMinute = sleepTimeMinus4Hours.getMinutes().toString().padStart(2, '0');
+            const cutoffTimeLabel = `${cutoffHour}:${cutoffMinute}`;
+
             if (chart) {
                 chart.data.labels = timeSeriesData.labels;
                 chart.data.datasets[0].data = timeSeriesData.data;
                 chart.data.datasets[1].data = sleepLevel;
                 chart.data.datasets[2].data = criticalLevel;
+                
+                chart.options.plugins.annotation.annotations.sleepCutoff.xMin = cutoffTimeLabel;
+                chart.options.plugins.annotation.annotations.sleepCutoff.xMax = cutoffTimeLabel;
+                chart.options.plugins.annotation.annotations.sleepCutoff.label.content = `Sleep in 4h (${cutoffTimeLabel})`;
+                
                 chart.update();
             } else {
                 const ctx = document.getElementById('caffeineChart').getContext('2d');
@@ -858,6 +873,30 @@
                                             return `Caffeine: ${context.parsed.y.toFixed(1)} mg`;
                                         }
                                         return context.dataset.label;
+                                    }
+                                }
+                            },
+                            annotation: {
+                                annotations: {
+                                    sleepCutoff: {
+                                        type: 'line',
+                                        xMin: cutoffTimeLabel,
+                                        xMax: cutoffTimeLabel,
+                                        borderColor: 'rgb(156, 39, 176)',
+                                        borderWidth: 2,
+                                        borderDash: [10, 5],
+                                        label: {
+                                            display: true,
+                                            content: `Sleep in 4h (${cutoffTimeLabel})`,
+                                            position: 'start',
+                                            backgroundColor: 'rgba(156, 39, 176, 0.8)',
+                                            color: 'white',
+                                            font: {
+                                                size: 11,
+                                                weight: 'bold'
+                                            },
+                                            padding: 4
+                                        }
                                     }
                                 }
                             }
