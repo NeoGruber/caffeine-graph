@@ -3,9 +3,918 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Caffeine Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #5d4037;
+            text-align: center;
+        }
+        h2 {
+            color: #5d4037;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        #caffeineChart {
+            margin-top: 30px;
+            max-height: 400px;
+        }
+        .info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3e0;
+            border-left: 4px solid #ff6f00;
+            border-radius: 4px;
+        }
+        .input-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #5d4037;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 15px;
+        }
+        button {
+            background-color: #5d4037;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #4e342e;
+        }
+        .consumption-list {
+            margin-top: 20px;
+        }
+        .consumption-item {
+            padding: 10px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .consumption-item button {
+            background-color: #d32f2f;
+            padding: 5px 10px;
+            font-size: 14px;
+            margin: 0;
+        }
+        .consumption-item button:hover {
+            background-color: #b71c1c;
+        }
+        .legend {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            border-radius: 4px;
+        }
+        .legend-item {
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+        }
+        .legend-color {
+            width: 30px;
+            height: 3px;
+            margin-right: 10px;
+        }
+        .settings-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #e3f2fd;
+            border-radius: 8px;
+        }
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .time-range-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .accordion {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .accordion-header {
+            background-color: #5d4037;
+            color: white;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+        .accordion-header:hover {
+            background-color: #4e342e;
+        }
+        .accordion-header h2 {
+            margin: 0;
+            color: white;
+            font-size: 18px;
+        }
+        .accordion-icon {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+        .accordion-icon.open {
+            transform: rotate(180deg);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background-color: white;
+        }
+        .accordion-content.open {
+            max-height: 1000px;
+        }
+        .accordion-body {
+            padding: 20px;
+        }
+        .disclaimer {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .disclaimer h3 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .disclaimer ul {
+            margin: 10px 0;
+        }
+        .disclaimer a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .disclaimer a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello world</h1>
+    <div class="container">
+        <h1>☕ Caffeine Tracker</h1>
+        
+        <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion('settingsAccordion')">
+                <h2>⚙️ Personal Settings</h2>
+                <span class="accordion-icon" id="settingsAccordionIcon">▼</span>
+            </div>
+            <div class="accordion-content open" id="settingsAccordion">
+                <div class="accordion-body">
+                    <div class="form-group">
+                        <label for="personaSelect">Select Profile</label>
+                        <select id="personaSelect" onchange="loadPersona()">
+                            <option value="custom">Custom</option>
+                            <option value="adult-male-average">Average Adult Male (70kg, 175cm)</option>
+                            <option value="adult-female-average">Average Adult Female (60kg, 165cm)</option>
+                            <option value="adult-male-large">Large Adult Male (90kg, 185cm)</option>
+                            <option value="adult-female-large">Large Adult Female (75kg, 175cm)</option>
+                            <option value="adult-male-small">Small Adult Male (60kg, 165cm)</option>
+                            <option value="adult-female-small">Small Adult Female (50kg, 155cm)</option>
+                            <option value="athlete-male">Male Athlete (80kg, 180cm)</option>
+                            <option value="athlete-female">Female Athlete (65kg, 170cm)</option>
+                            <option value="senior-male">Senior Male (75kg, 172cm)</option>
+                            <option value="senior-female">Senior Female (65kg, 160cm)</option>
+                        </select>
+                    </div>
+                    <div id="customSettings">
+                        <div class="settings-grid">
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <select id="gender">
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="weight">Weight (kg)</label>
+                                <input type="number" id="weight" value="70" min="30" max="200" step="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="age">Age (years)</label>
+                                <input type="number" id="age" value="30" min="1" max="120" step="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="height">Height (cm)</label>
+                                <input type="number" id="height" value="170" min="100" max="250" step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="time-range-grid">
+                        <div class="form-group">
+                            <label for="wakeTime">Wake Up Time</label>
+                            <select id="wakeTime"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sleepTime">Sleep Time</label>
+                            <select id="sleepTime"></select>
+                        </div>
+                    </div>
+                    <button onclick="updateSettings()">Update Settings</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <h2>Add Caffeine Consumption</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="sourceSelect">Caffeine Source</label>
+                    <select id="sourceSelect"></select>
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" id="quantity" value="1" min="0.1" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="time">Time</label>
+                    <select id="time"></select>
+                </div>
+            </div>
+            <button onclick="addConsumption()">Add to Tracker</button>
+            
+            <div class="consumption-list" id="consumptionList">
+                <h2>Today's Consumptions</h2>
+            </div>
+        </div>
+
+        <canvas id="caffeineChart"></canvas>
+        
+        <div class="legend">
+            <strong>Reference Levels:</strong>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: rgb(255, 193, 7);"></div>
+                <span>Sleep Impact Level (<span id="sleepLevelText">50mg</span>) - May interfere with sleep quality</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: rgb(244, 67, 54);"></div>
+                <span>Health Critical Level (<span id="criticalLevelText">400mg</span>) - Maximum recommended daily intake</span>
+            </div>
+        </div>
+        
+        <div class="disclaimer">
+            <h3>⚠️ Important Medical Disclaimer</h3>
+            <p><strong>This tool is for educational and informational purposes only.</strong> The caffeine calculations and recommendations are based on general health guidelines and population averages. They are not personalized medical advice and may not be appropriate for your individual health situation.</p>
+            
+            <p><strong>Individual responses to caffeine vary significantly based on:</strong></p>
+            <ul>
+                <li>Genetics (some people metabolize caffeine 40x faster than others)</li>
+                <li>Medications that interact with caffeine</li>
+                <li>Pre-existing health conditions (heart conditions, anxiety disorders, etc.)</li>
+                <li>Pregnancy or breastfeeding status</li>
+                <li>Tolerance built up from regular consumption</li>
+            </ul>
+            
+            <p><strong>Consult a healthcare provider if you experience:</strong></p>
+            <ul>
+                <li><strong>Sleep problems:</strong> Difficulty falling asleep, frequent waking, or poor sleep quality</li>
+                <li><strong>Anxiety symptoms:</strong> Jitteriness, nervousness, rapid heartbeat, or panic attacks</li>
+                <li><strong>Digestive issues:</strong> Stomach upset, acid reflux, or diarrhea</li>
+                <li><strong>Headaches:</strong> Frequent headaches or migraines, especially when reducing caffeine</li>
+                <li><strong>Heart palpitations:</strong> Irregular heartbeat or chest discomfort</li>
+                <li><strong>High blood pressure:</strong> Caffeine can temporarily raise blood pressure</li>
+                <li><strong>Dependency symptoms:</strong> Severe withdrawal symptoms like intense headaches, fatigue, or mood changes</li>
+            </ul>
+            
+            <p><strong>Learn more about caffeine and health:</strong></p>
+            <ul>
+                <li><a href="https://www.fda.gov/consumers/consumer-updates/spilling-beans-how-much-caffeine-too-much" target="_blank">FDA: How Much Caffeine is Too Much?</a></li>
+                <li><a href="https://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/in-depth/caffeine/art-20045678" target="_blank">Mayo Clinic: Caffeine Content and Health Effects</a></li>
+                <li><a href="https://www.hsph.harvard.edu/nutritionsource/caffeine/" target="_blank">Harvard T.H. Chan School of Public Health: Caffeine</a></li>
+                <li><a href="https://www.sleepfoundation.org/nutrition/caffeine-and-sleep" target="_blank">Sleep Foundation: Caffeine and Sleep</a></li>
+            </ul>
+        </div>
+        
+        <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+                <h2>📚 About Caffeine Metabolism</h2>
+                <span class="accordion-icon" id="infoAccordionIcon">▼</span>
+            </div>
+            <div class="accordion-content" id="infoAccordion">
+                <div class="accordion-body">
+                    <p><strong>Caffeine Half-Life:</strong> Caffeine has a half-life of approximately 5 hours in healthy adults. This means that after 5 hours, half of the caffeine you consumed is still in your system. After 10 hours, you'll still have about 25% remaining.</p>
+                    
+                    <p><strong>How This Tool Works:</strong> The chart shows how caffeine accumulates and decays throughout the day based on your consumption pattern. Each time you consume caffeine, it adds to your bloodstream, and then gradually decreases following the exponential decay pattern.</p>
+                    
+                    <p><strong>Personalized Limits:</strong> Your maximum daily caffeine limit is calculated using the following formula:</p>
+                    <ul>
+                        <li>Base calculation: Weight (kg) × 6mg</li>
+                        <li>Gender adjustment: Females receive 10% lower limit (research shows different metabolism rates)</li>
+                        <li>Age adjustment: Seniors (65+) receive 15% lower limit (metabolism slows with age)</li>
+                        <li>Maximum cap: 400mg per day (FDA recommended limit for healthy adults)</li>
+                    </ul>
+                    
+                    <p><strong>Sleep Impact Level (50mg):</strong> Research suggests that consuming caffeine 6 hours before bedtime can significantly reduce sleep quality. The 50mg threshold is a conservative guideline to help you avoid caffeine-related sleep disruption.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class CaffeineSource {
+            constructor(name, amountMg) {
+                this.name = name;
+                this.amountMg = amountMg;
+            }
+        }
+
+        class CaffeineConsumption {
+            constructor(source, quantity, consumptionTime) {
+                this.source = source;
+                this.quantity = quantity;
+                this.consumptionTime = consumptionTime;
+            }
+
+            getTotalCaffeine() {
+                return this.source.amountMg * this.quantity;
+            }
+        }
+
+        class CaffeineCalculator {
+            constructor(consumptions) {
+                this.consumptions = consumptions;
+                this.halfLifeHours = 5;
+            }
+
+            calculateCaffeineAtTime(targetTime) {
+                let totalCaffeine = 0;
+
+                for (const consumption of this.consumptions) {
+                    const hoursPassed = (targetTime - consumption.consumptionTime) / (1000 * 60 * 60);
+                    
+                    if (hoursPassed >= 0) {
+                        const initialCaffeine = consumption.getTotalCaffeine();
+                        const remainingCaffeine = initialCaffeine * Math.pow(0.5, hoursPassed / this.halfLifeHours);
+                        totalCaffeine += remainingCaffeine;
+                    }
+                }
+
+                return totalCaffeine;
+            }
+
+            generateTimeSeriesData(startTime, endTime, intervalMinutes = 15) {
+                const data = [];
+                const labels = [];
+                
+                let currentTime = new Date(startTime);
+                const end = new Date(endTime);
+
+                while (currentTime <= end) {
+                    const caffeineLevel = this.calculateCaffeineAtTime(currentTime);
+                    
+                    const hours = currentTime.getHours().toString().padStart(2, '0');
+                    const minutes = currentTime.getMinutes().toString().padStart(2, '0');
+                    
+                    labels.push(`${hours}:${minutes}`);
+                    data.push(caffeineLevel);
+
+                    currentTime = new Date(currentTime.getTime() + intervalMinutes * 60 * 1000);
+                }
+
+                return { labels, data };
+            }
+        }
+
+        let caffeineSources = {};
+        let consumptions = [];
+        let chart = null;
+        let userSettings = {
+            gender: 'male',
+            weight: 70,
+            age: 30,
+            height: 170,
+            wakeTime: '07:00',
+            sleepTime: '23:00'
+        };
+
+        const personas = {
+            'adult-male-average': {
+                gender: 'male',
+                weight: 70,
+                age: 30,
+                height: 175,
+                wakeTime: '07:00',
+                sleepTime: '23:00'
+            },
+            'adult-female-average': {
+                gender: 'female',
+                weight: 60,
+                age: 30,
+                height: 165,
+                wakeTime: '07:00',
+                sleepTime: '23:00'
+            },
+            'adult-male-large': {
+                gender: 'male',
+                weight: 90,
+                age: 35,
+                height: 185,
+                wakeTime: '06:30',
+                sleepTime: '23:00'
+            },
+            'adult-female-large': {
+                gender: 'female',
+                weight: 75,
+                age: 35,
+                height: 175,
+                wakeTime: '06:30',
+                sleepTime: '23:00'
+            },
+            'adult-male-small': {
+                gender: 'male',
+                weight: 60,
+                age: 28,
+                height: 165,
+                wakeTime: '07:30',
+                sleepTime: '23:30'
+            },
+            'adult-female-small': {
+                gender: 'female',
+                weight: 50,
+                age: 28,
+                height: 155,
+                wakeTime: '07:30',
+                sleepTime: '23:30'
+            },
+            'athlete-male': {
+                gender: 'male',
+                weight: 80,
+                age: 27,
+                height: 180,
+                wakeTime: '06:00',
+                sleepTime: '22:30'
+            },
+            'athlete-female': {
+                gender: 'female',
+                weight: 65,
+                age: 27,
+                height: 170,
+                wakeTime: '06:00',
+                sleepTime: '22:30'
+            },
+            'senior-male': {
+                gender: 'male',
+                weight: 75,
+                age: 65,
+                height: 172,
+                wakeTime: '06:00',
+                sleepTime: '22:00'
+            },
+            'senior-female': {
+                gender: 'female',
+                weight: 65,
+                age: 65,
+                height: 160,
+                wakeTime: '06:00',
+                sleepTime: '22:00'
+            }
+        };
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        function loadPersona() {
+            const personaKey = document.getElementById('personaSelect').value;
+            const customSettings = document.getElementById('customSettings');
+            
+            if (personaKey === 'custom') {
+                customSettings.style.display = 'block';
+            } else {
+                customSettings.style.display = 'none';
+                
+                const persona = personas[personaKey];
+                if (persona) {
+                    userSettings = { ...persona };
+                    
+                    document.getElementById('gender').value = persona.gender;
+                    document.getElementById('weight').value = persona.weight;
+                    document.getElementById('age').value = persona.age;
+                    document.getElementById('height').value = persona.height;
+                    document.getElementById('wakeTime').value = persona.wakeTime;
+                    document.getElementById('sleepTime').value = persona.sleepTime;
+                    
+                    updateSettings();
+                }
+            }
+        }
+
+        function calculatePersonalizedLimits(weight, age, gender) {
+            let maxDailyMg = weight * 6;
+            
+            if (gender === 'female') {
+                maxDailyMg = maxDailyMg * 0.9;
+            }
+            
+            if (age >= 65) {
+                maxDailyMg = maxDailyMg * 0.85;
+            }
+            
+            maxDailyMg = Math.min(maxDailyMg, 400);
+            
+            const sleepImpactMg = 50;
+            
+            return {
+                maxDaily: maxDailyMg,
+                sleepImpact: sleepImpactMg
+            };
+        }
+
+        async function loadCaffeineSources() {
+            try {
+                const response = await fetch('caffeine-sources.json');
+                const sources = await response.json();
+                
+                sources.forEach(source => {
+                    caffeineSources[source.id] = new CaffeineSource(source.name, source.caffeineMg);
+                });
+                
+                populateSourceDropdown(sources);
+                
+                const sampleIds = ['espresso-single', 'filter-coffee-medium'];
+                const validSamples = sampleIds.filter(id => caffeineSources[id]);
+                
+                if (validSamples.length >= 2) {
+                    consumptions = [
+                        new CaffeineConsumption(caffeineSources[validSamples[0]], 1, new Date(today.getTime() + 8 * 60 * 60 * 1000)),
+                        new CaffeineConsumption(caffeineSources[validSamples[1]], 1, new Date(today.getTime() + 10.5 * 60 * 60 * 1000)),
+                    ];
+                } else {
+                    consumptions = [];
+                }
+                
+                updateConsumptionList();
+                updateChart();
+            } catch (error) {
+                console.error('Error loading caffeine sources:', error);
+                alert('Could not load caffeine sources. Please ensure caffeine-sources.json is in the same directory.');
+            }
+        }
+
+        function populateSourceDropdown(sources) {
+            const sourceSelect = document.getElementById('sourceSelect');
+            sourceSelect.innerHTML = '';
+            
+            const categories = {};
+            sources.forEach(source => {
+                if (!categories[source.category]) {
+                    categories[source.category] = [];
+                }
+                categories[source.category].push(source);
+            });
+            
+            Object.keys(categories).sort().forEach(category => {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = category;
+                
+                categories[category].forEach(source => {
+                    const option = document.createElement('option');
+                    option.value = source.id;
+                    option.textContent = `${source.name} (${source.caffeineMg}mg)`;
+                    optgroup.appendChild(option);
+                });
+                
+                sourceSelect.appendChild(optgroup);
+            });
+        }
+
+        function populateTimeDropdown(selectId, includeAllDay = false) {
+            const timeSelect = document.getElementById(selectId);
+            timeSelect.innerHTML = '';
+            
+            for (let hour = 0; hour < 24; hour++) {
+                for (let minute = 0; minute < 60; minute += 15) {
+                    const hourStr = hour.toString().padStart(2, '0');
+                    const minuteStr = minute.toString().padStart(2, '0');
+                    const timeValue = `${hourStr}:${minuteStr}`;
+                    
+                    const option = document.createElement('option');
+                    option.value = timeValue;
+                    option.textContent = timeValue;
+                    
+                    timeSelect.appendChild(option);
+                }
+            }
+        }
+
+        function initializeTimeInput() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            
+            const roundedMinute = Math.round(currentMinute / 15) * 15;
+            const adjustedHour = roundedMinute === 60 ? currentHour + 1 : currentHour;
+            const finalMinute = roundedMinute === 60 ? 0 : roundedMinute;
+            
+            const currentTimeStr = `${adjustedHour.toString().padStart(2, '0')}:${finalMinute.toString().padStart(2, '0')}`;
+            
+            updateTimeDropdownOptions();
+            
+            const timeSelect = document.getElementById('time');
+            const options = Array.from(timeSelect.options);
+            const currentOption = options.find(opt => opt.value === currentTimeStr);
+            if (currentOption) {
+                currentOption.selected = true;
+            }
+        }
+
+        function updateTimeDropdownOptions() {
+            const timeSelect = document.getElementById('time');
+            timeSelect.innerHTML = '';
+            
+            const [wakeHour, wakeMinute] = userSettings.wakeTime.split(':').map(Number);
+            const [sleepHour, sleepMinute] = userSettings.sleepTime.split(':').map(Number);
+            
+            const wakeMinutes = wakeHour * 60 + wakeMinute;
+            const sleepMinutes = sleepHour * 60 + sleepMinute;
+            
+            for (let hour = 0; hour < 24; hour++) {
+                for (let minute = 0; minute < 60; minute += 15) {
+                    const totalMinutes = hour * 60 + minute;
+                    
+                    let inRange = false;
+                    if (sleepMinutes > wakeMinutes) {
+                        inRange = totalMinutes >= wakeMinutes && totalMinutes < sleepMinutes;
+                    } else {
+                        inRange = totalMinutes >= wakeMinutes || totalMinutes < sleepMinutes;
+                    }
+                    
+                    if (inRange) {
+                        const hourStr = hour.toString().padStart(2, '0');
+                        const minuteStr = minute.toString().padStart(2, '0');
+                        const timeValue = `${hourStr}:${minuteStr}`;
+                        
+                        const option = document.createElement('option');
+                        option.value = timeValue;
+                        option.textContent = timeValue;
+                        
+                        timeSelect.appendChild(option);
+                    }
+                }
+            }
+        }
+
+        function updateSettings() {
+            userSettings.gender = document.getElementById('gender').value;
+            userSettings.weight = parseFloat(document.getElementById('weight').value);
+            userSettings.age = parseFloat(document.getElementById('age').value);
+            userSettings.height = parseFloat(document.getElementById('height').value);
+            userSettings.wakeTime = document.getElementById('wakeTime').value;
+            userSettings.sleepTime = document.getElementById('sleepTime').value;
+            
+            updateTimeDropdownOptions();
+            updateChart();
+            
+            const limits = calculatePersonalizedLimits(userSettings.weight, userSettings.age, userSettings.gender);
+            document.getElementById('criticalLevelText').textContent = `${Math.round(limits.maxDaily)}mg`;
+        }
+
+        function addConsumption() {
+            const sourceKey = document.getElementById('sourceSelect').value;
+            const quantity = parseFloat(document.getElementById('quantity').value);
+            const timeString = document.getElementById('time').value;
+
+            if (!timeString) {
+                alert('Please select a time');
+                return;
+            }
+
+            const [hours, minutes] = timeString.split(':').map(Number);
+            const consumptionTime = new Date(today.getTime() + hours * 60 * 60 * 1000 + minutes * 60 * 1000);
+
+            const source = caffeineSources[sourceKey];
+            const consumption = new CaffeineConsumption(source, quantity, consumptionTime);
+            
+            consumptions.push(consumption);
+            consumptions.sort((a, b) => a.consumptionTime - b.consumptionTime);
+            
+            updateConsumptionList();
+            updateChart();
+        }
+
+        function removeConsumption(index) {
+            consumptions.splice(index, 1);
+            updateConsumptionList();
+            updateChart();
+        }
+
+        function updateConsumptionList() {
+            const listContainer = document.getElementById('consumptionList');
+            listContainer.innerHTML = '<h2>Today\'s Consumptions</h2>';
+
+            if (consumptions.length === 0) {
+                listContainer.innerHTML += '<p style="color: #999;">No consumptions added yet.</p>';
+                return;
+            }
+
+            consumptions.forEach((consumption, index) => {
+                const hours = consumption.consumptionTime.getHours().toString().padStart(2, '0');
+                const minutes = consumption.consumptionTime.getMinutes().toString().padStart(2, '0');
+                const totalCaffeine = consumption.getTotalCaffeine();
+
+                const item = document.createElement('div');
+                item.className = 'consumption-item';
+                item.innerHTML = `
+                    <span>
+                        <strong>${consumption.source.name}</strong> 
+                        (${totalCaffeine.toFixed(0)}mg) 
+                        × ${consumption.quantity} 
+                        at ${hours}:${minutes}
+                    </span>
+                    <button onclick="removeConsumption(${index})">Remove</button>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        function updateChart() {
+            const calculator = new CaffeineCalculator(consumptions);
+            
+            const [wakeHour, wakeMinute] = userSettings.wakeTime.split(':').map(Number);
+            const [sleepHour, sleepMinute] = userSettings.sleepTime.split(':').map(Number);
+            
+            const startTime = new Date(today.getTime() + wakeHour * 60 * 60 * 1000 + wakeMinute * 60 * 1000);
+            const endTime = new Date(today.getTime() + sleepHour * 60 * 60 * 1000 + sleepMinute * 60 * 1000);
+            
+            const timeSeriesData = calculator.generateTimeSeriesData(startTime, endTime, 15);
+
+            const limits = calculatePersonalizedLimits(userSettings.weight, userSettings.age, userSettings.gender);
+            const sleepLevel = Array(timeSeriesData.labels.length).fill(limits.sleepImpact);
+            const criticalLevel = Array(timeSeriesData.labels.length).fill(limits.maxDaily);
+
+            if (chart) {
+                chart.data.labels = timeSeriesData.labels;
+                chart.data.datasets[0].data = timeSeriesData.data;
+                chart.data.datasets[1].data = sleepLevel;
+                chart.data.datasets[2].data = criticalLevel;
+                chart.update();
+            } else {
+                const ctx = document.getElementById('caffeineChart').getContext('2d');
+                
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: timeSeriesData.labels,
+                        datasets: [{
+                            label: 'Caffeine Level',
+                            data: timeSeriesData.data,
+                            borderColor: 'rgb(139, 69, 19)',
+                            backgroundColor: 'rgba(139, 69, 19, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 0,
+                            borderWidth: 3,
+                            order: 1
+                        },
+                        {
+                            label: 'Sleep Impact Level',
+                            data: sleepLevel,
+                            borderColor: 'rgb(255, 193, 7)',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            fill: false,
+                            order: 2
+                        },
+                        {
+                            label: 'Health Critical Level',
+                            data: criticalLevel,
+                            borderColor: 'rgb(244, 67, 54)',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            fill: false,
+                            order: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        if (context.datasetIndex === 0) {
+                                            return `Caffeine: ${context.parsed.y.toFixed(1)} mg`;
+                                        }
+                                        return context.dataset.label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Time of Day'
+                                },
+                                ticks: {
+                                    maxTicksLimit: 20,
+                                    autoSkip: true
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Caffeine Level (mg)'
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return value.toFixed(0) + ' mg';
+                                    }
+                                }
+                            }
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            axis: 'x',
+                            intersect: false
+                        }
+                    }
+                });
+            }
+        }
+
+        populateTimeDropdown('wakeTime', true);
+        populateTimeDropdown('sleepTime', true);
+        
+        document.getElementById('wakeTime').value = '07:00';
+        document.getElementById('sleepTime').value = '23:00';
+        
+        function toggleAccordion(accordionId) {
+            const content = document.getElementById(accordionId);
+            const icon = document.getElementById(accordionId + 'Icon');
+            
+            content.classList.toggle('open');
+            icon.classList.toggle('open');
+        }
+        
+        loadCaffeineSources().then(() => {
+            initializeTimeInput();
+            const limits = calculatePersonalizedLimits(userSettings.weight, userSettings.age, userSettings.gender);
+            document.getElementById('criticalLevelText').textContent = `${Math.round(limits.maxDaily)}mg`;
+        });
+    </script>
 </body>
 </html>

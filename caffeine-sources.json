@@ -1,0 +1,218 @@
+[
+  {
+    "id": "espresso-single",
+    "name": "Espresso Single Shot (30ml)",
+    "caffeineMg": 64,
+    "category": "Coffee"
+  },
+  {
+    "id": "espresso-double",
+    "name": "Espresso Double Shot (60ml)",
+    "caffeineMg": 128,
+    "category": "Coffee"
+  },
+  {
+    "id": "filter-coffee-small",
+    "name": "Filter Coffee (150ml)",
+    "caffeineMg": 90,
+    "category": "Coffee"
+  },
+  {
+    "id": "filter-coffee-medium",
+    "name": "Filter Coffee (200ml)",
+    "caffeineMg": 120,
+    "category": "Coffee"
+  },
+  {
+    "id": "filter-coffee-large",
+    "name": "Filter Coffee (300ml)",
+    "caffeineMg": 180,
+    "category": "Coffee"
+  },
+  {
+    "id": "automat-coffee-small",
+    "name": "Automat Coffee (120ml)",
+    "caffeineMg": 72,
+    "category": "Coffee"
+  },
+  {
+    "id": "automat-coffee-large",
+    "name": "Automat Coffee (240ml)",
+    "caffeineMg": 144,
+    "category": "Coffee"
+  },
+  {
+    "id": "french-press",
+    "name": "French Press Coffee (240ml)",
+    "caffeineMg": 144,
+    "category": "Coffee"
+  },
+  {
+    "id": "cold-brew",
+    "name": "Cold Brew Coffee (240ml)",
+    "caffeineMg": 200,
+    "category": "Coffee"
+  },
+  {
+    "id": "instant-coffee",
+    "name": "Instant Coffee (240ml)",
+    "caffeineMg": 62,
+    "category": "Coffee"
+  },
+  {
+    "id": "cappuccino",
+    "name": "Cappuccino (150ml)",
+    "caffeineMg": 63,
+    "category": "Coffee Drinks"
+  },
+  {
+    "id": "latte-small",
+    "name": "Latte (250ml)",
+    "caffeineMg": 63,
+    "category": "Coffee Drinks"
+  },
+  {
+    "id": "latte-large",
+    "name": "Latte (350ml)",
+    "caffeineMg": 125,
+    "category": "Coffee Drinks"
+  },
+  {
+    "id": "americano",
+    "name": "Americano (250ml)",
+    "caffeineMg": 77,
+    "category": "Coffee Drinks"
+  },
+  {
+    "id": "flat-white",
+    "name": "Flat White (180ml)",
+    "caffeineMg": 77,
+    "category": "Coffee Drinks"
+  },
+  {
+    "id": "macchiato",
+    "name": "Macchiato (60ml)",
+    "caffeineMg": 80,
+    "category": "Coffee Drinks"
+  },
+  {
+    "id": "mocha",
+    "name": "Mocha (350ml)",
+    "caffeineMg": 95,
+    "category": "Coffee Drinks"
+  },
+  {
+    "id": "green-tea",
+    "name": "Green Tea (240ml)",
+    "caffeineMg": 29,
+    "category": "Tea"
+  },
+  {
+    "id": "black-tea",
+    "name": "Black Tea (240ml)",
+    "caffeineMg": 48,
+    "category": "Tea"
+  },
+  {
+    "id": "white-tea",
+    "name": "White Tea (240ml)",
+    "caffeineMg": 15,
+    "category": "Tea"
+  },
+  {
+    "id": "oolong-tea",
+    "name": "Oolong Tea (240ml)",
+    "caffeineMg": 37,
+    "category": "Tea"
+  },
+  {
+    "id": "matcha",
+    "name": "Matcha (240ml)",
+    "caffeineMg": 70,
+    "category": "Tea"
+  },
+  {
+    "id": "chai-tea",
+    "name": "Chai Tea (240ml)",
+    "caffeineMg": 50,
+    "category": "Tea"
+  },
+  {
+    "id": "energy-drink-small",
+    "name": "Energy Drink (250ml)",
+    "caffeineMg": 80,
+    "category": "Energy Drinks"
+  },
+  {
+    "id": "energy-drink-large",
+    "name": "Energy Drink (500ml)",
+    "caffeineMg": 160,
+    "category": "Energy Drinks"
+  },
+  {
+    "id": "red-bull",
+    "name": "Red Bull (250ml)",
+    "caffeineMg": 80,
+    "category": "Energy Drinks"
+  },
+  {
+    "id": "monster",
+    "name": "Monster (500ml)",
+    "caffeineMg": 160,
+    "category": "Energy Drinks"
+  },
+  {
+    "id": "cola",
+    "name": "Cola (330ml)",
+    "caffeineMg": 35,
+    "category": "Soft Drinks"
+  },
+  {
+    "id": "cola-500",
+    "name": "Cola (500ml)",
+    "caffeineMg": 53,
+    "category": "Soft Drinks"
+  },
+  {
+    "id": "dark-chocolate",
+    "name": "Dark Chocolate (28g)",
+    "caffeineMg": 20,
+    "category": "Food"
+  },
+  {
+    "id": "milk-chocolate",
+    "name": "Milk Chocolate (28g)",
+    "caffeineMg": 6,
+    "category": "Food"
+  },
+  {
+    "id": "chocolate-bar",
+    "name": "Chocolate Bar (100g)",
+    "caffeineMg": 43,
+    "category": "Food"
+  },
+  {
+    "id": "coffee-ice-cream",
+    "name": "Coffee Ice Cream (100g)",
+    "caffeineMg": 50,
+    "category": "Food"
+  },
+  {
+    "id": "pre-workout",
+    "name": "Pre-Workout Supplement",
+    "caffeineMg": 200,
+    "category": "Supplements"
+  },
+  {
+    "id": "caffeine-pill-100",
+    "name": "Caffeine Pill (100mg)",
+    "caffeineMg": 100,
+    "category": "Supplements"
+  },
+  {
+    "id": "caffeine-pill-200",
+    "name": "Caffeine Pill (200mg)",
+    "caffeineMg": 200,
+    "category": "Supplements"
+  }
+]
