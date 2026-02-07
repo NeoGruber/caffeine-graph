@@ -1,0 +1,66 @@
+{
+  "adult-male-average": {
+    "gender": "male",
+    "weight": 70,
+    "age": 30,
+    "height": 175,
+    "wakeTime": "07:00",
+    "sleepTime": "23:00"
+  },
+  "adult-female-average": {
+    "gender": "female",
+    "weight": 60,
+    "age": 30,
+    "height": 165,
+    "wakeTime": "07:00",
+    "sleepTime": "23:00"
+  },
+  "adult-male-large": {
+    "gender": "male",
+    "weight": 90,
+    "age": 35,
+    "height": 185,
+    "wakeTime": "06:30",
+    "sleepTime": "23:00"
+  },
+  "adult-female-large": {
+    "gender": "female",
+    "weight": 75,
+    "age": 35,
+    "height": 175,
+    "wakeTime": "06:30",
+    "sleepTime": "23:00"
+  },
+  "adult-male-small": {
+    "gender": "male",
+    "weight": 60,
+    "age": 28,
+    "height": 165,
+    "wakeTime": "07:30",
+    "sleepTime": "23:30"
+  },
+  "adult-female-small": {
+    "gender": "female",
+    "weight": 50,
+    "age": 28,
+    "height": 155,
+    "wakeTime": "07:30",
+    "sleepTime": "23:30"
+  },
+  "senior-male": {
+    "gender": "male",
+    "weight": 75,
+    "age": 65,
+    "height": 172,
+    "wakeTime": "06:00",
+    "sleepTime": "22:00"
+  },
+  "senior-female": {
+    "gender": "female",
+    "weight": 65,
+    "age": 65,
+    "height": 160,
+    "wakeTime": "06:00",
+    "sleepTime": "22:00"
+  }
+}
