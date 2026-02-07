@@ -297,7 +297,7 @@
             <strong>Reference Levels:</strong>
             <div class="legend-item">
                 <div class="legend-color" style="background-color: rgb(255, 193, 7);"></div>
-                <span>Sleep Impact Level (<span id="sleepLevelText">50mg</span>) - May interfere with sleep quality</span>
+                <span>Sleep Impact Level (<span id="sleepLevelText">100mg</span>) - Caffeine above this level 4 hours before bed may disrupt sleep</span>
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background-color: rgb(244, 67, 54);"></div>
@@ -357,7 +357,7 @@
                         <li>Maximum cap: 400mg per day (FDA recommended limit for healthy adults)</li>
                     </ul>
                     
-                    <p><strong>Sleep Impact Level (50mg):</strong> Research suggests that consuming caffeine 6 hours before bedtime can significantly reduce sleep quality. The 50mg threshold is a conservative guideline to help you avoid caffeine-related sleep disruption.</p>
+                    <p><strong>Sleep Impact Level (100mg):</strong> Research shows that 100mg of caffeine can be safely consumed up to 4 hours before bedtime without disrupting sleep. However, caffeine consumed 6 hours or more before bed can still reduce total sleep time by over an hour, even if you don't notice it. The general recommendation is to stop caffeine consumption 8-9 hours before bedtime for optimal sleep quality.</p>
                 </div>
             </div>
         </div>
@@ -564,7 +564,7 @@
             
             maxDailyMg = Math.min(maxDailyMg, 400);
             
-            const sleepImpactMg = 50;
+            const sleepImpactMg = 100;
             
             return {
                 maxDaily: maxDailyMg,
